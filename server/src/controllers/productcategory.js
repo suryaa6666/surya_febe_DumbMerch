@@ -21,10 +21,6 @@ exports.updateProductCategory = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const cek = await productcategory.findOne({
-            where: { id }
-        })
-
         const data = await productcategory.update(req.body, {
             where: { id }
         })

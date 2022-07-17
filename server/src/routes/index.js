@@ -11,6 +11,7 @@ const { getProducts, getProduct, addProduct, updateProduct, deleteProduct } = re
 const { getTransactions, getTransaction, addTransaction } = require('../controllers/transaction');
 const { addProductCategory, updateProductCategory, deleteProductCategory, } = require('../controllers/productcategory');
 const { updateProfile } = require('../controllers/profile');
+const { getWishlist, getWishlists, addWishlist, deleteWishlist, getWishlistById } = require('../controllers/wishlist')
 
 // middlewares
 const { auth } = require("../middlewares/auth");
@@ -56,5 +57,11 @@ router.delete('/productcategory/:id', auth, deleteProductCategory);
 router.patch('/profile/:idUser', auth, updateProfile);
 
 router.get('/checkAuth', auth, checkAuth);
+
+router.get('/wishlists', auth, getWishlists);
+router.get('/wishlist', auth, getWishlist);
+router.get('/wishlist/:id', auth, getWishlistById);
+router.post('/wishlist', auth, addWishlist);
+router.delete('/wishlist/:id', auth, deleteWishlist);
 
 module.exports = router;

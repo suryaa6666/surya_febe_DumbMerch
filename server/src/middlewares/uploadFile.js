@@ -1,7 +1,6 @@
 const multer = require("multer");
 
 exports.uploadFile = imageFile => {
-
     // storage
     const storage = multer.diskStorage({
         destination: (req, file, cb) => {
@@ -42,7 +41,8 @@ exports.uploadFile = imageFile => {
     }).single(imageFile);
 
     return (req, res, next) => {
-        upload(req, req, function (err) {
+
+        upload(req, res, function (err) {
             if (req.fileValidationError)
                 return res.status(400).send(req.fileValidationError);
 

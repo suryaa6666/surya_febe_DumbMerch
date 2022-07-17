@@ -29,7 +29,7 @@ const ProductTransactionComponent = (props) => {
     return (
         <Row className="my-3">
             <Col sm={3}>
-                <img src={`../assets/img/${props.photo}`} alt="Image cannot be loaded" className='w-100 h-100' style={{ objectFit: 'cover', borderRadius: '10px' }} />
+                <img src={`${props.photo}`} alt="Image cannot be loaded" className='w-100 h-100' style={{ objectFit: 'cover', borderRadius: '10px' }} />
             </Col>
             <Col sm={6} className="text-white">
                 <h5 className="fw-bold"><Link to={`/detail/${props.id}`} className="text-danger text-decoration-none">{props.name}</Link></h5>
@@ -41,7 +41,9 @@ const ProductTransactionComponent = (props) => {
                 </p>
             </Col>
             <Col sm={3}>
-                <img src='../assets/img/logo.png' className="w-100 h-100" style={{ objectFit: 'contain' }} />
+                <div class="btn-primary d-flex justify-content-center align-items-center h-100 w-100">
+                    {props.status}
+                </div>
             </Col>
         </Row>
     )

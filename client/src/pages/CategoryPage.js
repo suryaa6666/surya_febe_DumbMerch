@@ -5,23 +5,63 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { API } from '../config/api'
+import { toast } from 'react-toastify';
+
 
 const CategoryProduct = () => {
 
     document.title = 'Category';
 
     const [show, setShow] = useState(false);
+    const [category, setCategory] = useState();
+    const [selectedIdDelete, setSelectedIdDelete] = useState()
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+
+    const getCategory = async () => {
+        const data = await API.get('/category')
+        setCategory(data.data.data)
+    }
+
+    const handleDelete = async () => {
+        await API.delete(`/category/${selectedIdDelete}`)
+        setCategory(category.filter((item) => {
+            return item.id != selectedIdDelete
+        }));
+
+        toast.success('Delete category success!', {
+            position: "top-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+        });
+    }
+
+    const handleIdDelete = (id) => {
+        setSelectedIdDelete(id)
+        console.log(selectedIdDelete)
+    }
+
+    useEffect(() => {
+        getCategory()
+    }, [])
+
 
     return (
         <>
             <NavbarComponent />
             <Container className="py-5">
-                <h3 className="text-white fw-bold"> List Category </h3>
+                <div className='d-flex justify-content-space'>
+                    <h3 className="text-white fw-bold"> List Category </h3>
+                    <Link to={'/addcategory'} className="d-flex justify-content-end" style={{ width: "80%" }}> <Button variant="primary">Add Category</Button> </Link>
+                </div>
                 <Table striped bordered hover variant="dark" className='mt-4'>
                     <thead>
                         <tr>
@@ -31,90 +71,24 @@ const CategoryProduct = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Mouse</td>
-                            <td>
-                                <Row>
-                                    <Col md={6}>
-                                        <Link to='/editcategory' className='text-white text-decoration-none'><Button variant="success" className="w-100 fw-bold">Edit</Button></Link>
-                                    </Col>
-                                    <Col md={6}>
-                                        <Button variant="danger" className="w-100 fw-bold" onClick={handleShow}>Delete</Button>
-                                    </Col>
-                                </Row>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Keyboard</td>
-                            <td>
-                                <Row>
-                                    <Col md={6}>
-                                        <Link to='/editcategory' className='text-white text-decoration-none'><Button variant="success" className="w-100 fw-bold">Edit</Button></Link>
-                                    </Col>
-                                    <Col md={6}>
-                                        <Button variant="danger" className="w-100 fw-bold" onClick={handleShow}>Delete</Button>
-                                    </Col>
-                                </Row>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Bag</td>
-                            <td>
-                                <Row>
-                                    <Col md={6}>
-                                        <Link to='/editcategory' className='text-white text-decoration-none'><Button variant="success" className="w-100 fw-bold">Edit</Button></Link>
-                                    </Col>
-                                    <Col md={6}>
-                                        <Button variant="danger" className="w-100 fw-bold" onClick={handleShow}>Delete</Button>
-                                    </Col>
-                                </Row>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Stationary</td>
-                            <td>
-                                <Row>
-                                    <Col md={6}>
-                                        <Link to='/editcategory' className='text-white text-decoration-none'><Button variant="success" className="w-100 fw-bold">Edit</Button></Link>
-                                    </Col>
-                                    <Col md={6}>
-                                        <Button variant="danger" className="w-100 fw-bold" onClick={handleShow}>Delete</Button>
-                                    </Col>
-                                </Row>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>Doll</td>
-                            <td>
-                                <Row>
-                                    <Col md={6}>
-                                        <Link to='/editcategory' className='text-white text-decoration-none'><Button variant="success" className="w-100 fw-bold">Edit</Button></Link>
-                                    </Col>
-                                    <Col md={6}>
-                                        <Button variant="danger" className="w-100 fw-bold" onClick={handleShow}>Delete</Button>
-                                    </Col>
-                                </Row>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>6</td>
-                            <td>Pillow</td>
-                            <td>
-                                <Row>
-                                    <Col md={6}>
-                                        <Link to='/editcategory' className='text-white text-decoration-none'><Button variant="success" className="w-100 fw-bold">Edit</Button></Link>
-                                    </Col>
-                                    <Col md={6}>
-                                        <Button variant="danger" className="w-100 fw-bold" onClick={handleShow}>Delete</Button>
-                                    </Col>
-                                </Row>
-                            </td>
-                        </tr>
+                        {category?.map((item, index) => {
+                            return (
+                                <tr key={index}>
+                                    <td>{parseInt(index) + 1}</td>
+                                    <td>{item.name}</td>
+                                    <td>
+                                        <Row>
+                                            <Col md={6}>
+                                                <Link to={`/editcategory/${item.id}`} className='text-white text-decoration-none'><Button variant="success" className="w-100 fw-bold">Edit</Button></Link>
+                                            </Col>
+                                            <Col md={6}>
+                                                <Button variant="danger" className="w-100 fw-bold" onClick={() => { handleShow(); handleIdDelete(item.id) }}>Delete</Button>
+                                            </Col>
+                                        </Row>
+                                    </td>
+                                </tr>
+                            )
+                        })}
                     </tbody>
                 </Table>
                 <Modal show={show} onHide={handleClose}>
@@ -123,7 +97,7 @@ const CategoryProduct = () => {
                     </Modal.Header>
                     <Modal.Body>Are you sure you want to delete this data?</Modal.Body>
                     <Modal.Footer>
-                        <Button variant="success" onClick={handleClose} className="px-4">
+                        <Button variant="success" onClick={() => { handleDelete(); handleClose() }} className="px-4">
                             Yes
                         </Button>
                         <Button variant="danger" onClick={handleClose} className="px-4">

@@ -12,12 +12,11 @@ const ProfilePage = () => {
 
     const [subTotal, setSubTotal] = useState(0);
     const [profile, setProfile] = useState()
+    const [transaction, setTransaction] = useState()
 
-    let data = localStorage.getItem('buy') ? JSON.parse(localStorage.getItem('buy')) : [];
-
-    const getSubTotal = () => {
+    const getSubTotal = async () => {
         let total = 0;
-        data.map(item => total += item.price);
+        await transaction?.map(item => total += item.price);
         setSubTotal(total);
     }
 
@@ -27,10 +26,17 @@ const ProfilePage = () => {
         setProfile(dataProfile.data.data)
     }
 
+    const getTransaction = async () => {
+        const dataProfile = await API.get(`/transaction`)
+        console.log(dataProfile, "ini transaction")
+        setTransaction(dataProfile.data.data)
+    }
+
     useEffect(() => {
         getProfile();
-        getSubTotal();
-    }, []);
+        getTransaction();
+        getSubTotal()
+    }, [transaction]);
 
     const priceFormatter = (price) => {
         return new Intl.NumberFormat('id-ID', {
@@ -79,8 +85,8 @@ const ProfilePage = () => {
                         <h3 className="text-danger fw-bold"> My Transaction </h3>
                         <div className="w-100" style={{ backgroundColor: '#303031', padding: '20px' }}>
                             {
-                                data.map((item, i) => {
-                                    return <ProductTransactionComponent photo={item.photo} name={item.name} price={item.price} date={item.date} id={item.id} key={i.toString()} />
+                                transaction?.map((item, i) => {
+                                    return <ProductTransactionComponent photo={item.product.img} name={item.product.name} price={item.price} date={item.createdAt} id={item.product.id} status={item.status} key={i.toString()} />
                                 })
                             }
                             <p className="w-100 fw-bold text-white">

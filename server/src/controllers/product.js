@@ -105,10 +105,13 @@ exports.updateProduct = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const data = await product.update(req.body, {
+        const data = await product.update({
+            ...req.body,
+            img: process.env.PATH_FILE + req.file.filename,
+            idUser: req.user.id
+        }, {
             where: {
-                id,
-                idUser: req.user.id
+                id
             }
         })
 
@@ -137,8 +140,7 @@ exports.deleteProduct = async (req, res) => {
 
         const data = await product.destroy({
             where: {
-                id,
-                idUser: req.user.id
+                id
             }
         })
 

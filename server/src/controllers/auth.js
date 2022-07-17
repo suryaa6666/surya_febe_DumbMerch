@@ -115,6 +115,7 @@ exports.login = async (req, res) => {
             status: "success",
             message: "login success!",
             data: {
+                id: userExist.id,
                 name: userExist.name,
                 email: userExist.email,
                 status: userExist.status,
@@ -159,6 +160,7 @@ exports.checkAuth = async (req, res) => {
             status: "success",
             message: "login success!",
             data: {
+                id: userExist.id,
                 name: userExist.name,
                 email: userExist.email,
                 profile: userExist.profile,

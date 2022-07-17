@@ -1,4 +1,4 @@
-const { user, profile, product } = require('../../models');
+const { user, profile, product, wishlist } = require('../../models');
 
 exports.getUsers = async (req, res) => {
     try {
@@ -17,7 +17,14 @@ exports.getUsers = async (req, res) => {
                     attributes: {
                         exclude: ["createdAt", "updatedAt", "idUser"]
                     }
-                }
+                },
+                {
+                    model: wishlist,
+                    as: "wishlist",
+                    attributes: {
+                        exclude: ["createdAt", "updatedAt", "idUser"]
+                    }
+                },
             ],
             attributes: {
                 exclude: ["password"]

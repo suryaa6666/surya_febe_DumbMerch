@@ -24,6 +24,7 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
+import AddCategory from './pages/AddCategory';
 
 if (localStorage.token) setAuthToken(localStorage.token)
 
@@ -76,14 +77,15 @@ function App() {
           <Route path="/register" element={<Register />}></Route>
           <Route path="/" element={<PrivateRoute />}>
             <Route path="/addproduct" element={<AddProduct />}></Route>
+            <Route path="/addcategory" element={<AddCategory />}></Route>
             <Route path="/home" element={<HomePage />}></Route>
             <Route path="/detail/:id" element={<DetailProduct />}></Route>
             <Route path="/profile" element={<ProfilePage />}></Route>
             <Route path="/category" element={<CategoryPage />}></Route>
             <Route path="/product" element={<ProductPage />}></Route>
             <Route path="/complain" element={<ComplainPage />}></Route>
-            <Route path="/editcategory" element={<EditCategory />}></Route>
-            <Route path="/editproduct" element={<EditProduct />}></Route>
+            <Route path="/editcategory/:id" element={<EditCategory />}></Route>
+            <Route path="/editproduct/:id" element={<EditProduct />}></Route>
             <Route path="/wishlist" element={<WishlistPage />}></Route>
           </Route>
         </Routes>

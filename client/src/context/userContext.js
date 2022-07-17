@@ -1,4 +1,5 @@
 import { createContext, useReducer } from 'react'
+import { API } from '../config/api'
 
 export const UserContext = createContext()
 
@@ -18,6 +19,7 @@ const reducer = (state, action) => {
             }
         case "LOGIN_SUCCESS":
             localStorage.setItem("token", payload.token)
+            API.defaults.headers.common["Authorization"] = `Bearer ${payload.token}`
             return {
                 isLogin: true,
                 user: payload
@@ -25,6 +27,7 @@ const reducer = (state, action) => {
         case "AUTH_ERROR":
         case "LOGOUT":
             localStorage.removeItem("token")
+            delete API.defaults.headers.common["Authorization"]
             return {
                 isLogin: false,
                 user: {}
