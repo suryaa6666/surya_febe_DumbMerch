@@ -11,9 +11,13 @@ import Register from './pages/Register';
 import EditCategory from './pages/EditCategory';
 import EditProduct from './pages/EditProduct';
 import WishlistPage from './pages/WishlistPage';
+import AddProduct from './pages/AddProduct';
 import PrivateRoute from './components/PrivateRoute';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { API, setAuthToken } from './config/api'
+import { UserContext } from './context/userContext'
+import { useContext, useEffect } from 'react'
 
 import {
   BrowserRouter,
@@ -21,7 +25,38 @@ import {
   Route,
 } from "react-router-dom";
 
+if (localStorage.token) setAuthToken(localStorage.token)
+
 function App() {
+
+  const [state, dispatch] = useContext(UserContext)
+
+  console.log(state)
+
+  const checkAuth = async () => {
+
+    const data = await API.get('/checkAuth', {
+      validateStatus: () => true
+    })
+
+    console.log(data, "ini cuy")
+
+    if (!localStorage.token || data.data.status !== 'success') {
+      return dispatch({
+        type: 'AUTH_ERROR'
+      })
+    }
+
+    return dispatch({
+      type: 'USER_SUCCESS',
+      payload: data.data.data
+    })
+  }
+
+  useEffect(() => {
+    checkAuth()
+  }, [])
+
   return (
     <>
       <BrowserRouter>
@@ -40,6 +75,7 @@ function App() {
           <Route path="/" element={<Login />}></Route>
           <Route path="/register" element={<Register />}></Route>
           <Route path="/" element={<PrivateRoute />}>
+            <Route path="/addproduct" element={<AddProduct />}></Route>
             <Route path="/home" element={<HomePage />}></Route>
             <Route path="/detail/:id" element={<DetailProduct />}></Route>
             <Route path="/profile" element={<ProfilePage />}></Route>

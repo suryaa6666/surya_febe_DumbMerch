@@ -1,13 +1,22 @@
+import { useEffect, useContext } from 'react'
 import { Navbar, Nav } from 'react-bootstrap';
+import { useQuery } from 'react-query';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { API } from '../config/api'
+import { UserContext } from '../context/userContext'
+
 
 const NavbarComponent = () => {
 
+    const [state, dispatch] = useContext(UserContext)
+
     const navigate = useNavigate();
 
-    let isAdmin = JSON.parse(localStorage.getItem('userLogin'));
-    isAdmin = isAdmin["role"] == 'admin';
+    let isAdmin = state.user.status === 'admin'
+
+    console.log(state)
+    console.log(isAdmin, "ini admin")
 
     const handleComplain = () => {
         navigate('/complain');
@@ -30,7 +39,9 @@ const NavbarComponent = () => {
     }
 
     const handleLogout = () => {
-        localStorage.removeItem('userLogin');
+        dispatch({
+            type: 'LOGOUT'
+        })
         toast.success('Logout success!', {
             position: "top-left",
             autoClose: 2000,
@@ -40,7 +51,6 @@ const NavbarComponent = () => {
             draggable: true,
             progress: undefined,
         });
-        navigate('/');
     }
 
     return (

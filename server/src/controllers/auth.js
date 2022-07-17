@@ -1,4 +1,4 @@
-const { user, profile } = require("../../models")
+const { user, profile, product } = require("../../models")
 
 const Joi = require("joi");
 const bcrypt = require("bcrypt");
@@ -117,7 +117,52 @@ exports.login = async (req, res) => {
             data: {
                 name: userExist.name,
                 email: userExist.email,
+                status: userExist.status,
                 token
+            }
+        })
+
+    } catch (error) {
+        res.status(400).send({
+            status: "error",
+            message: error.toString()
+        })
+    }
+}
+
+exports.checkAuth = async (req, res) => {
+    try {
+        const userExist = await user.findOne({
+            where: { id: req.user.id },
+            include: [
+                {
+                    model: profile,
+                    as: "profile",
+                    attributes: {
+                        exclude: ["createdAt", "updatedAt", "idUser"]
+                    }
+                },
+                {
+                    model: product,
+                    as: "product",
+                    attributes: {
+                        exclude: ["createdAt", "updatedAt", "idUser"]
+                    }
+                }
+            ],
+            attributes: {
+                exclude: ["password"]
+            }
+        });
+
+        res.status(200).send({
+            status: "success",
+            message: "login success!",
+            data: {
+                name: userExist.name,
+                email: userExist.email,
+                profile: userExist.profile,
+                status: userExist.status,
             }
         })
 

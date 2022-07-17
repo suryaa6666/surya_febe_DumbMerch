@@ -4,12 +4,14 @@ import Container from 'react-bootstrap/Container';
 import NavbarComponent from "../components/NavbarComponent";
 import ProductTransactionComponent from "../components/ProductTransactionComponent";
 import { useState, useEffect } from 'react';
+import { API } from '../config/api'
 
 const ProfilePage = () => {
 
     document.title = 'My Profile';
 
     const [subTotal, setSubTotal] = useState(0);
+    const [profile, setProfile] = useState()
 
     let data = localStorage.getItem('buy') ? JSON.parse(localStorage.getItem('buy')) : [];
 
@@ -19,7 +21,14 @@ const ProfilePage = () => {
         setSubTotal(total);
     }
 
+    const getProfile = async () => {
+        const dataProfile = await API.get(`/checkAuth`)
+        console.log(dataProfile, "ini profile")
+        setProfile(dataProfile.data.data)
+    }
+
     useEffect(() => {
+        getProfile();
         getSubTotal();
     }, []);
 
@@ -45,23 +54,23 @@ const ProfilePage = () => {
                             <Col sm={6}>
                                 <div>
                                     <h4 className="text-danger fw-bold">Name</h4>
-                                    <p className="text-white">Surya</p>
+                                    <p className="text-white">{profile?.name}</p>
                                 </div>
                                 <div>
                                     <h4 className="text-danger fw-bold">Email</h4>
-                                    <p className="text-white">suryahalo@gmail.com</p>
+                                    <p className="text-white">{profile?.email}</p>
                                 </div>
                                 <div>
                                     <h4 className="text-danger fw-bold">Phone</h4>
-                                    <p className="text-white">089514043621</p>
+                                    <p className="text-white">{profile?.profile.phone ? profile?.profile.phone : '-'}</p>
                                 </div>
                                 <div>
                                     <h4 className="text-danger fw-bold">Gender</h4>
-                                    <p className="text-white">Male</p>
+                                    <p className="text-white">{profile?.profile.phone ? profile?.profile.gender : '-'}</p>
                                 </div>
                                 <div>
                                     <h4 className="text-danger fw-bold">Address</h4>
-                                    <p className="text-white">Jln. PC Kentang Kelurahan Plis Beliin yang Baru</p>
+                                    <p className="text-white">{profile?.profile.phone ? profile?.profile.address : '-'}</p>
                                 </div>
                             </Col>
                         </Row>

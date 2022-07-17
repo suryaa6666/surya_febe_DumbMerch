@@ -5,7 +5,7 @@ const router = express.Router();
 
 // controllers
 const { getUsers, getUser, addUser, updateUser, deleteUser } = require('../controllers/user');
-const { register, login } = require('../controllers/auth');
+const { register, login, checkAuth } = require('../controllers/auth');
 const { getCategories, addCategory, updateCategory, deleteCategory, getCategory } = require('../controllers/category');
 const { getProducts, getProduct, addProduct, updateProduct, deleteProduct } = require('../controllers/product');
 const { getTransactions, getTransaction, addTransaction } = require('../controllers/transaction');
@@ -54,5 +54,7 @@ router.delete('/productcategory/:id', auth, deleteProductCategory);
 
 // profile routes
 router.patch('/profile/:idUser', auth, updateProfile);
+
+router.get('/checkAuth', auth, checkAuth);
 
 module.exports = router;

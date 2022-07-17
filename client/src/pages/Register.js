@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { useMutation } from 'react-query';
+import { API } from '../config/api'
 
 
 const Register = () => {
@@ -28,11 +30,15 @@ const Register = () => {
         setPassword(event.target.value);
     }
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        let data = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : [];
-        if (!name)
-            return toast.error('Name cannot be empty!', {
+    const handleSubmit = useMutation(async (event) => {
+        try {
+            event.preventDefault();
+
+            const data = await API.post(`/register`, { name, email, password }, {
+                validateStatus: () => true
+            })
+
+            if (data.data.status != "success") return toast.error(data.data.message, {
                 position: "top-left",
                 autoClose: 2000,
                 hideProgressBar: false,
@@ -41,53 +47,22 @@ const Register = () => {
                 draggable: true,
                 progress: undefined,
             });
-        if (!email)
-            return toast.error('Email cannot be empty!', {
+
+            toast.success('New account has been successfully created!', {
                 position: "top-left",
-                autoClose: 2000,
+                autoClose: 5000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: false,
                 draggable: true,
                 progress: undefined,
             });
-        if (!password)
-            return toast.error('Password cannot be empty!', {
-                position: "top-left",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: true,
-                progress: undefined,
-            });
-        if (data) {
-            const emailExist = data.some(item => item.email == email)
-            if (emailExist) {
-                return toast.error('Email already exist, use another one!', {
-                    position: "top-left",
-                    autoClose: 2000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: false,
-                    draggable: true,
-                    progress: undefined,
-                });
-            }
+            navigate('/');
+
+        } catch (error) {
+            console.log(error)
         }
-        data.push({ name, email, password, role: 'user' });
-        localStorage.setItem('user', JSON.stringify(data));
-        toast.success('New account has been successfully created!', {
-            position: "top-left",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: false,
-            draggable: true,
-            progress: undefined,
-        });
-        navigate('/');
-    }
+    })
 
     return (
         <Container className="d-flex align-items-center justify-content-center" style={{ height: '100vh' }}>
@@ -110,7 +85,7 @@ const Register = () => {
                 <Col sm={6} className="d-flex align-items-center">
                     <Container style={{ backgroundColor: '#191819', padding: '30px', borderRadius: '10px' }}>
                         <h1 className={registerStyle.fontWhiteBold}>Register</h1>
-                        <Form className="mt-4">
+                        <Form className="mt-4" onSubmit={(e) => handleSubmit.mutate(e)}>
                             <Form.Group className="mb-3">
                                 <Form.Control type="text" placeholder="Name" style={{ backgroundColor: '#474647' }} name="name" onChange={handleNameChange} className="text-white" />
                             </Form.Group>
@@ -120,7 +95,7 @@ const Register = () => {
                             <Form.Group className="mb-3">
                                 <Form.Control type="password" placeholder="Password" style={{ backgroundColor: '#474647' }} name="password" onChange={handlePasswordChange} className="text-white" />
                             </Form.Group>
-                            <Button variant="danger" type="submit" className="w-100 mt-4" onClick={(event) => handleSubmit(event)}>
+                            <Button variant="danger" type="submit" className="w-100 mt-4">
                                 Register
                             </Button>
                         </Form>
