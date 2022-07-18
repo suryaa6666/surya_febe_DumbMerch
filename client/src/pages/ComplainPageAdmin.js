@@ -1,16 +1,16 @@
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
 import NavbarComponent from '../components/NavbarComponent';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { io } from 'socket.io-client'
-import { useEffect, useState, useContext } from 'react'
-import { Container } from 'react-bootstrap';
+import { useState, useEffect, useContext } from 'react'
 import Contact from '../components/complain/Contact'
 import Chat from '../components/complain/Chat'
 import { UserContext } from '../context/userContext'
 
-const ComplainPage = () => {
+const ComplainPageAdmin = () => {
 
     document.title = 'Complain';
 
@@ -20,22 +20,26 @@ const ComplainPage = () => {
 
     const [state, dispatch] = useContext(UserContext)
 
+
     const maxWord = (word) => {
         return word.length >= 25 ? word.substring(0, 25) + "..." : word;
     }
 
+    // initial variable outside component
     let socket;
 
     const loadContacts = () => {
-        socket.emit("load admin contact")
+        socket.emit("load customer contact")
 
-        socket.on("admin contact", (data) => {
+        socket.on("customer contacts", (data) => {
             console.log(data, "ini data kontak")
 
-            let dataContacts = {
-                ...data,
-                messsage: messages.length > 0 ? messages[messages.length - 1].messages : "click here to start new chat"
-            }
+            let dataContacts = data.filter(item => (item.status !== 'admin') && (item.recipientMessage.length > 0 || item.senderMessage.length > 0))
+
+            dataContacts = dataContacts.map(item => ({
+                ...item,
+                message: item.senderMessage.length > 0 ? item.senderMessage[item.senderMessage.length - 1].message : "Click here to start the chat"
+            }))
 
             setContacts([dataContacts])
             console.log(dataContacts)
@@ -68,6 +72,7 @@ const ComplainPage = () => {
         loadContacts()
         loadMessages()
 
+
         return () => {
             socket.disconnect()
         }
@@ -75,6 +80,7 @@ const ComplainPage = () => {
 
     const onClickContact = (data) => {
         setContact(data)
+        console.log(data, "ada datanya gasi")
         socket.emit("load messages", data.id)
     }
 
@@ -92,7 +98,6 @@ const ComplainPage = () => {
         // chatMessages.scrollTop = chatMessages?.scrollHeight
     }
 
-
     const onSendMessage = (e) => {
         if (e.key === "Enter") {
             const data = {
@@ -103,7 +108,6 @@ const ComplainPage = () => {
             e.target.value = ""
         }
     }
-
 
     return (
         <>
@@ -122,4 +126,4 @@ const ComplainPage = () => {
     )
 }
 
-export default ComplainPage
+export default ComplainPageAdmin

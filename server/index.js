@@ -8,6 +8,10 @@ const router = require("./src/routes");
 
 const app = express();
 
+const io = require('socket.io')(5000);
+
+require('./src/socket')(io)
+
 const port = 7777;
 
 app.use(express.json());

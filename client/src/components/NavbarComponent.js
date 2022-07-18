@@ -18,6 +18,10 @@ const NavbarComponent = () => {
     console.log(state)
     console.log(isAdmin, "ini admin")
 
+    const handleComplainAdmin = () => {
+        navigate('/complainadmin');
+    }
+
     const handleComplain = () => {
         navigate('/complain');
     }
@@ -69,7 +73,7 @@ const NavbarComponent = () => {
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="d-flex justify-content-end w-100">
-                    <Nav.Link onClick={handleComplain} className="mx-2 fw-bold" style={{ color: '#FFF' }}>Complain</Nav.Link>
+                    {isAdmin ? <Nav.Link onClick={handleComplainAdmin} className="mx-2 fw-bold" style={{ color: '#FFF' }}>Complain</Nav.Link> : <Nav.Link onClick={handleComplain} className="mx-2 fw-bold" style={{ color: '#FFF' }}>Complain</Nav.Link>}
                     {isAdmin ? <Nav.Link onClick={handleCategory} className="mx-2 fw-bold" style={{ color: '#FFF' }}>Category</Nav.Link> : ''}
                     {isAdmin ? <Nav.Link onClick={handleProduct} className="mx-2 fw-bold" style={{ color: '#FFF' }}>Product</Nav.Link> : ''}
                     {isAdmin ? '' : <Nav.Link onClick={handleProfile} className="mx-2 fw-bold" style={{ color: '#FFF' }}>Profile</Nav.Link>}

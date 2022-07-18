@@ -1,5 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../src/App.css';
+import ComplainPageAdmin from './pages/ComplainPageAdmin';
 import ComplainPage from './pages/ComplainPage';
 import CategoryPage from './pages/CategoryPage';
 import DetailProduct from './pages/DetailProduct';
@@ -83,7 +84,8 @@ function App() {
             <Route path="/profile" element={<ProfilePage />}></Route>
             <Route path="/category" element={<CategoryPage />}></Route>
             <Route path="/product" element={<ProductPage />}></Route>
-            <Route path="/complain" element={<ComplainPage />}></Route>
+            <Route path="/complainadmin" element={<ComplainPageAdmin />}></Route>
+            <Route path="/complain" element={<ComplainPage />}></Route >
             <Route path="/editcategory/:id" element={<EditCategory />}></Route>
             <Route path="/editproduct/:id" element={<EditProduct />}></Route>
             <Route path="/wishlist" element={<WishlistPage />}></Route>

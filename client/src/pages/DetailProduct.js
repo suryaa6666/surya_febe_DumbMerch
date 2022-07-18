@@ -33,6 +33,7 @@ const DetailProduct = () => {
     useEffect(() => {
         getData();
     }, [])
+    
 
     const handleBuy = async () => {
         // let buy = localStorage.getItem('buy') ? JSON.parse(localStorage.getItem('buy')) : [];

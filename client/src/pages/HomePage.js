@@ -23,7 +23,7 @@ const HomePage = () => {
     }
 
     useEffect(() => {
-        state.user.status === "admin" ? navigate('/complain') : navigate('/home')
+        state.user.status === "admin" ? navigate('/complainadmin') : navigate('/home')
         getProduct()
     }, [])
 
